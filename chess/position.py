@@ -6,5 +6,15 @@ class Position:
     def __str__(self):
         return f"[{self.x}, {self.y}]"
 
-if __name__ == "__main__":
-    print(Position(5, 3))
+    def __sub__(self, other):
+        if type(other).__name__ != "Position":
+            return None
+        return Position(abs(self.x - other.x), abs(self.y - other.y))
+
+    def __getitem__(self, index):
+        if index == 'x':
+            return self.x
+        elif index == 'y':
+            return self.y
+        else:
+            raise KeyError("The Key can be only x and y.")
