@@ -1,6 +1,3 @@
-import sys
-sys.path.append('.')
-
 from .piece import Piece
 from ..position import Position
 from ..team import Team
