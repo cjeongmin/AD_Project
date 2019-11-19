@@ -10,6 +10,7 @@ from chess.pieces.king import King
 
 from chess.position import Position
 from chess.team import Team
+from chess.check import fillCheckBoard
 
 def clear():
     system('clear')
@@ -33,9 +34,18 @@ if __name__ == "__main__":
             Rook(Position(0, 7), Team.WHITE), Knight(Position(1, 7), Team.WHITE), Bishop(Position(2, 7), Team.WHITE), Queen(Position(3, 7), Team.WHITE), King(Position(4, 7), Team.WHITE), Bishop(Position(5, 7), Team.WHITE), Knight(Position(6, 7), Team.WHITE), Rook(Position(7, 7), Team.WHITE)
         ],
     ]
-    
+    turn = False
     while True:
         clear()
+        blackCheckBoard, whiteCheckBoard = [[True for _ in range(8)] for _ in range(8)], [[True for _ in range(8)] for _ in range(8)]
+        whiteCheck = fillCheckBoard(whiteCheckBoard, chessBoard, Team.WHITE) #화이트 킹이 체크인지 아닌지, 왕이 움직일 수 있는 공간 검사
+        blackCheck = fillCheckBoard(blackCheckBoard, chessBoard, Team.BLACK) #블랙 킹이 체크인지 아닌지, 옹이 움직일 수 있는 공간 검사
+
+        for line in whiteCheckBoard:
+            for e in line:
+                print(1 if not(e) else 0, end=" ")
+            print()
+        print("*"*20)
         print("    0    1    2    3    4    5    6    7")
         for idx, line in enumerate(chessBoard):
             print(idx, end=" ")
@@ -43,21 +53,27 @@ if __name__ == "__main__":
                 print(piece, end=" ")
             print(idx)
         print("    0    1    2    3    4    5    6    7")
+        print(("White" if not(turn) else "Black") + "'s turn")
+        print(f"Check: {blackCheck if turn else whiteCheck}")
 
         curY, curX = list(map(int, input().split()))
         if curX == -1 and curY == -1:
             break
-        
+
         pick = chessBoard[curY][curX]
-        if pick == None:
+        if pick == None or pick.team != (Team.WHITE if not(turn) else Team.BLACK):
             continue
         print(f"pick: {pick}")
-        
-        moveY, moveX = list(map(int, input().split()))
-        print(f"move: {chessBoard[moveY][moveX]}")
 
-        
-        pick.move(Position(moveX, moveY), chessBoard)
-        sleep(2)
+        moveY, moveX = list(map(int, input().split()))
+
+        if pick.getType() != "King":
+            if not(pick.move(Position(moveX, moveY), chessBoard)):
+                continue
+        else:
+            if not(pick.move(Position(moveX, moveY), chessBoard, whiteCheckBoard if not(turn) else blackCheckBoard)):
+                continue
+        turn = not(turn)
+        sleep(1)
 
     print("Exit")

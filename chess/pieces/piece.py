@@ -10,14 +10,14 @@ from ..team import Team
 """
 
 class Piece(metaclass=ABCMeta):
-    __KINDS = ["Pawn", "Bishop", "Knight", "Rook", "Queen", "King"] # private
+    __KINDS = ("Pawn", "Bishop", "Knight", "Rook", "Queen", "King") # private
 
     def __init__(self, pos: Position, team: Team):
         self.pos = pos
         self.team = team
 
     @abstractmethod
-    def move(self, movePos: Position, board):
+    def move(self, movePos: Position, board) -> bool:
         raise NotImplementedError("The method not implemented.")
 
     def getType(self) -> str:
@@ -26,6 +26,7 @@ class Piece(metaclass=ABCMeta):
     def __str__(self):
         return f"[{str(self.team)[5]}{type(self).__name__[0]}]"
 
+    # Equal
     def __eq__(self, other) -> bool:
         if type(other).__name__ not in self.__KINDS:
             return False
@@ -34,5 +35,6 @@ class Piece(metaclass=ABCMeta):
             return True
         return False
 
+    # Not Equal
     def __ne__(self, other) -> bool:
         return not(self == other)

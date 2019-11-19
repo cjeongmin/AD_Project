@@ -15,3 +15,8 @@ class Knight(Piece):
                 board[self.pos['y']][self.pos['x']] = None
                 self.pos = movePos
                 board[self.pos['y']][self.pos['x']] = self
+                return True
+        return False
+
+    def __str__(self):
+        return f"[{str(self.team)[5]}N]"
