@@ -72,8 +72,8 @@ if __name__ == "__main__":
                 continue
         else:
             if not(pick.move(Position(moveX, moveY), chessBoard, whiteCheckBoard if not(turn) else blackCheckBoard)):
+                # 킹이 움직일 때 실패한 경우 사용자에게 경고를 하는 코드가 필요함.
                 continue
         turn = not(turn)
-        sleep(1)
 
     print("Exit")

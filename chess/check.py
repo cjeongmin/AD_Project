@@ -8,6 +8,7 @@ def fillCheckBoard(src, chessBoard, team: Team):
                 continue
             if team == chessBoard[y][x].team and chessBoard[y][x].getType() == "King":
                 kingPos = [x, y]
+                print(kingPos)
                 continue
 
             if team == chessBoard[y][x].team:
@@ -25,7 +26,7 @@ def fillCheckBoard(src, chessBoard, team: Team):
                     dx, dy = [1, 1, -1 ,-1], [-1, 1, 1, -1]
                     for i in range(4):
                         x1, y1 = x + dx[i], y + dy[i]
-                        while (0 <= x1 < 8 and 0 <= y1 < 8) and (chessBoard[y1][x1] is None or (chessBoard[y1][x1].getType() == "King" and chessBoard[y1][x1].team != team)):
+                        while (0 <= x1 < 8 and 0 <= y1 < 8) and (chessBoard[y1][x1] is None or chessBoard[y1][x1].getType() == "King"):
                             src[y1][x1] = False
                             y1 += dy[i]
                             x1 += dx[i]
@@ -39,7 +40,7 @@ def fillCheckBoard(src, chessBoard, team: Team):
                     dx, dy = [1, 0, -1, 0], [0, 1, 0, -1]
                     for i in range(4):
                         x1, y1 = x + dx[i], y + dy[i]
-                        while (0 <= x1 < 8 and 0 <= y1 < 8) and (chessBoard[y1][x1] is None or (chessBoard[y1][x1].getType() == "King" and chessBoard[y1][x1].team != team)):
+                        while (0 <= x1 < 8 and 0 <= y1 < 8) and (chessBoard[y1][x1] is None or chessBoard[y1][x1].getType() == "King"):
                             src[y1][x1] = False
                             y1 += dy[i]
                             x1 += dx[i]
@@ -47,7 +48,7 @@ def fillCheckBoard(src, chessBoard, team: Team):
                     dx, dy = [-1, -1, 0, 1, 1, 1, 0, -1], [0, -1, -1, -1, 0, 1, 1, 1]
                     for i in range(8):
                         x1, y1 = x + dx[i], y + dy[i]
-                        while (0 <= x1 < 8 and 0 <= y1 < 8) and (chessBoard[y1][x1] is None or (chessBoard[y1][x1].getType() == "King" and chessBoard[y1][x1].team != team)):
+                        while (0 <= x1 < 8 and 0 <= y1 < 8) and (chessBoard[y1][x1] is None or chessBoard[y1][x1].getType() == "King"):
                             src[y1][x1] = False
                             y1 += dy[i]
                             x1 += dx[i]
@@ -57,4 +58,5 @@ def fillCheckBoard(src, chessBoard, team: Team):
                         nx, ny = x+dx[i], y+dy[i]
                         if (0 <= ny < 8 and 0 <= nx < 8):
                             src[ny][nx] = False
-    return True if not(chessBoard[kingPos[1]][kingPos[0]]) else False # 공격받으면 True 아니면 False
+    
+    return True if not(src[kingPos[1]][kingPos[0]]) else False # 공격받으면 True 아니면 False
