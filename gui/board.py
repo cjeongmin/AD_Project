@@ -14,7 +14,7 @@ class Board(QWidget):
         self.setWindowTitle("Chess")
 
         # 체스 보드를 배경화면으로 설정
-        self.chessboard = QImage(os.path.dirname(os.path.abspath(__file__))+'/chessboard.png').scaled(QSize(800, 800))
+        self.chessboard = QImage(os.path.dirname(os.path.abspath(__file__))+'/images/chessboard.png').scaled(QSize(800, 800))
         palette = QPalette()
         palette.setBrush(10, QBrush(self.chessboard))
         self.setPalette(palette)
