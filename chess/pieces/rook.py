@@ -6,7 +6,7 @@ class Break(Exception):
     pass
 
 class Rook(Piece):
-    def __init__(self, pos: Position, team=Team):
+    def __init__(self, pos: Position, team: Team):
         super().__init__(pos, team)
 
     def move(self, movePos: Position, board):
