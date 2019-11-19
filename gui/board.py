@@ -1,16 +1,24 @@
-import sys
+import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QImage, QPalette, QBrush
 
-class board(QWidget):
+class Board(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
         
     def initUI(self):
-        self.setGeometry(0, 0, 300, 400)
-        self.setStyleSheet("background-image: url(Images_and_HTML/bg.jpg)")
+        self.setFixedSize(800, 800)
+        self.setGeometry(0, 0, 800, 800)
         self.setWindowTitle("Chess")
+
+        # 체스 보드를 배경화면으로 설정
+        self.chessboard = QImage(os.path.dirname(os.path.abspath(__file__))+'/chessboard.png').scaled(QSize(800, 800))
+        palette = QPalette()
+        palette.setBrush(10, QBrush(self.chessboard))
+        self.setPalette(palette)
+
         self.show()
 
     def keyPressEvent(self, e):
@@ -19,5 +27,5 @@ class board(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    ex = board()
+    ex = Board()
     sys.exit(app.exec_())
