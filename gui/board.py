@@ -13,22 +13,11 @@ class Board(QWidget):
     def __init__(self, chessBoard):
         super().__init__()
         self.chessBoard = chessBoard
-        ###
         self.tiles = []
         self.turn = Team.WHITE
         self.pickedPiece = None
+        self.edge = None
         self.repaintBoard()
-        # for y in range(8):
-        #     self.tiles.append([])
-        #     for x in range(8):
-        #         if chessBoard[y][x] == None:
-        #             self.tiles[y].append(None)
-        #             continue
-        #         self.tiles[y].append(Tile(chessBoard[y][x], self))
-        #         self.tiles[y][x].setGeometry(x*100, y*100, 100, 100)
-        #         self.tiles[y][x].clicked.connect(self.pickPiece)
-        #         self.tiles[y][x].show()
-        ###
         self.initUI()
         self.setCenter()
 
@@ -41,7 +30,6 @@ class Board(QWidget):
         palette = QPalette()
         palette.setBrush(10, QBrush(QImage(os.path.dirname(os.path.abspath(__file__))+'/images/chessboard.png').scaled(QSize(800, 800))))
         self.setPalette(palette)
-
         self.show()
 
     def setCenter(self):
@@ -54,6 +42,7 @@ class Board(QWidget):
         piece = self.sender().piece
         if piece.team == self.turn:
             self.pickedPiece = piece
+            self.edge = QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/yellowedge.png')
         else:
             if self.pickedPiece != None:
                 if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
@@ -64,7 +53,6 @@ class Board(QWidget):
             else:
                 return
 
-    
     def mousePressEvent(self, e):
         x, y = e.x()//100, e.y()//100
         if self.pickedPiece != None:
