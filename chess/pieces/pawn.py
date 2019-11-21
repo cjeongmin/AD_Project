@@ -18,15 +18,18 @@ class Pawn(Piece):
                 board[self.pos['y']][self.pos['x']] = None
                 self.pos = movePos
                 board[self.pos['y']][self.pos['x']] = self
+                self.isFirstMove = False
                 return True
             elif gap['y'] == 2 and self.isFirstMove and board[movePos['y']][movePos['x']] == None:
                 board[self.pos['y']][self.pos['x']] = None
                 self.pos = movePos
                 board[self.pos['y']][self.pos['x']] = self
+                self.isFirstMove = False
                 return True
-        elif gap['x'] == 1 and gap['y'] == 1 and self != board[movePos['y']][movePos['x']]:
+        elif gap['x'] == 1 and gap['y'] == 1 and board[movePos['y']][movePos['x']] != None and self != board[movePos['y']][movePos['x']]:
             board[self.pos['y']][self.pos['x']] = None
             self.pos = movePos
             board[self.pos['y']][self.pos['x']] = self
+            self.isFirstMove = False
             return True
         return False

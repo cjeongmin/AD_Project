@@ -15,6 +15,8 @@ class Board(QWidget):
         self.chessBoard = chessBoard
         ###
         self.tiles = []
+        self.turn = Team.WHITE
+        self.pickedPiece = None
         self.repaintBoard()
         # for y in range(8):
         #     self.tiles.append([])
@@ -27,8 +29,6 @@ class Board(QWidget):
         #         self.tiles[y][x].clicked.connect(self.pickPiece)
         #         self.tiles[y][x].show()
         ###
-        self.turn = Team.WHITE
-        self.pickedPiece = None
         self.initUI()
         self.setCenter()
 
@@ -54,35 +54,25 @@ class Board(QWidget):
         piece = self.sender().piece
         if piece.team == self.turn:
             self.pickedPiece = piece
-            print("PICK")
         else:
             if self.pickedPiece != None:
-                self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)
+                if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
+                    return
                 self.repaintBoard()
                 self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
                 self.pickedPiece = None
-                print("ATTACK")
-                for line in self.chessBoard:
-                    for piece in line:
-                        print(piece, end=" ")
-                    print()
             else:
-                print("RETRY")
                 return
 
     
     def mousePressEvent(self, e):
         x, y = e.x()//100, e.y()//100
         if self.pickedPiece != None:
-            self.pickedPiece.move(Position(x, y), self.chessBoard)
+            if not(self.pickedPiece.move(Position(x, y), self.chessBoard)):
+                return
             self.repaintBoard()
             self.pickedPiece = None
             self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
-            print("*" * 20)
-            for line in self.chessBoard:
-                for piece in line:
-                    print(piece, end=" ")
-                print()
 
     def repaintBoard(self):
         for tile in self.tiles:
@@ -97,6 +87,7 @@ class Board(QWidget):
                 tile.setGeometry(x*100, y*100, 100, 100)
                 tile.clicked.connect(self.pickPiece)
                 tile.show()
+        self.setWindowTitle(f"Chess: {Team.BLACK if self.turn != Team.BLACK else Team.WHITE}")
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
