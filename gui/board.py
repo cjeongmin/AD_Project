@@ -1,7 +1,7 @@
 import sys, os
 sys.path.insert(0, "/home/cjm/AD_Project/chess")
 
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QLabel
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
 
@@ -42,7 +42,13 @@ class Board(QWidget):
         piece = self.sender().piece
         if piece.team == self.turn:
             self.pickedPiece = piece
-            self.edge = QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/yellowedge.png')
+            if self.edge != None:
+                self.edge.move(piece.pos['x']*100, piece.pos['y']*100)
+            else:
+                self.edge = QLabel(self)
+                self.edge.setPixmap(QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/yellowedge.png'))
+                self.edge.move(piece.pos['x']*100, piece.pos['y']*100)
+                self.edge.show()
         else:
             if self.pickedPiece != None:
                 if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
@@ -50,6 +56,8 @@ class Board(QWidget):
                 self.repaintBoard()
                 self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
                 self.pickedPiece = None
+                self.edge.deleteLater()
+                self.edge = None
             else:
                 return
 
@@ -60,6 +68,8 @@ class Board(QWidget):
                 return
             self.repaintBoard()
             self.pickedPiece = None
+            self.edge.deleteLater()
+            self.edge = None
             self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
 
     def repaintBoard(self):
