@@ -1,29 +1,34 @@
 import sys, os
+sys.path.insert(0, "/home/cjm/AD_Project/chess")
+
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QDragEnterEvent, QDropEvent
-
-from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent, QDrag
-from PyQt5.QtCore import Qt, QMimeData
+from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
 
 from .tile import Tile
+from chess.team import Team
+from chess.position import Position
 
 class Board(QWidget):
     def __init__(self, chessBoard):
         super().__init__()
+        self.chessBoard = chessBoard
         ###
         self.tiles = []
-        for y in range(8):
-            self.tiles.append([])
-            for x in range(8):
-                if chessBoard[y][x] == None:
-                    self.tiles[y].append(None)
-                    continue
-                self.tiles[y].append(Tile(chessBoard[y][x], self))
-                self.tiles[y][x].setGeometry(x*100, y*100, 100, 100)
-                self.tiles[y][x].clicked.connect(self.getPiece)
-                self.tiles[y][x].show()
+        self.repaintBoard()
+        # for y in range(8):
+        #     self.tiles.append([])
+        #     for x in range(8):
+        #         if chessBoard[y][x] == None:
+        #             self.tiles[y].append(None)
+        #             continue
+        #         self.tiles[y].append(Tile(chessBoard[y][x], self))
+        #         self.tiles[y][x].setGeometry(x*100, y*100, 100, 100)
+        #         self.tiles[y][x].clicked.connect(self.pickPiece)
+        #         self.tiles[y][x].show()
         ###
+        self.turn = Team.WHITE
+        self.pickedPiece = None
         self.initUI()
         self.setCenter()
 
@@ -45,27 +50,59 @@ class Board(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def getPiece(self):
-        print(self.sender().piece, self.sender().piece.pos)
+    def pickPiece(self):
+        piece = self.sender().piece
+        if piece.team == self.turn:
+            self.pickedPiece = piece
+            print("PICK")
+        else:
+            if self.pickedPiece != None:
+                self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)
+                self.repaintBoard()
+                self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
+                self.pickedPiece = None
+                print("ATTACK")
+                for line in self.chessBoard:
+                    for piece in line:
+                        print(piece, end=" ")
+                    print()
+            else:
+                print("RETRY")
+                return
+
+    
+    def mousePressEvent(self, e):
+        x, y = e.x()//100, e.y()//100
+        if self.pickedPiece != None:
+            self.pickedPiece.move(Position(x, y), self.chessBoard)
+            self.repaintBoard()
+            self.pickedPiece = None
+            self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
+            print("*" * 20)
+            for line in self.chessBoard:
+                for piece in line:
+                    print(piece, end=" ")
+                print()
+
+    def repaintBoard(self):
+        for tile in self.tiles:
+            tile.deleteLater()
+        self.tiles = []
+        for y in range(8):
+            for x in range(8):
+                if self.chessBoard[y][x] == None:
+                    continue
+                tile = Tile(self.chessBoard[y][x], self)
+                self.tiles.append(tile)
+                tile.setGeometry(x*100, y*100, 100, 100)
+                tile.clicked.connect(self.pickPiece)
+                tile.show()
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.close()
+    
 
-    def mouseMoveEvent(self, e):
-        print(f"mouseMoveEvent {e.pos()}")
-        mime_data = QMimeData()
-        drag = QDrag(self)
-        drag.setMimeData(mime_data)
-
-        drag.exec_(Qt.MoveAction)
-
-    def dragEnterEvent(self, e):
-        print(e.pos())
-        e.accept()
-
-    def dropEvent(self, e):
-        print(e.pos())
 
 # if __name__ == "__main__":
     # app = QApplication(sys.argv)

@@ -57,3 +57,6 @@ class Tile(QAbstractButton):
         if self.image == None:
             return
         return self.image.size()
+
+    def __str__(self):
+        return f"{self.piece}"
