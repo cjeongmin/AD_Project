@@ -11,12 +11,12 @@ from chess.position import Position
 from chess.check import fillCheckBoard
 
 """
-TODO
+TODO:
 1. 프로모션 완성
 2. 캐슬링
 3. 자신이 핀에 걸린 상태인지 확인
 4. 체크일때 왕 움직이기
-5. 체크메이기
+5. 체크메이트
 """
 
 class Board(QWidget):
@@ -72,7 +72,7 @@ class Board(QWidget):
                     else:
                         if promotion:
                             print("PROMOTION")
-                            "프로모션 코드를 추가해야 함"
+                            # TODO: 프로모션 코드를 추가해야 함
                 elif self.pickedPiece.getType() != "King":
                     if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
                         return
@@ -99,7 +99,7 @@ class Board(QWidget):
                 else:
                     if promotion:
                         print("PROMOTION")
-                        "프로모션 코드를 추가해야 함"
+                        # TODO: 프로모션 코드를 추가해야 함
             elif self.pickedPiece.getType() != "King":
                 if not(self.pickedPiece.move(Position(x, y), self.chessBoard)):
                     return
