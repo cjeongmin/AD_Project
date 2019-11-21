@@ -10,6 +10,15 @@ from chess.team import Team
 from chess.position import Position
 from chess.check import fillCheckBoard
 
+"""
+TODO
+1. 프로모션 완성
+2. 캐슬링
+3. 자신이 핀에 걸린 상태인지 확인
+4. 체크일때 왕 움직이기
+5. 체크메이기
+"""
+
 class Board(QWidget):
     def __init__(self, chessBoard):
         super().__init__()
