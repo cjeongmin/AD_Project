@@ -15,7 +15,7 @@ TODO:
 1. 프로모션 완성
 2. 캐슬링
 3. 자신이 핀에 걸린 상태인지 확인
-4. 체크일때 왕 움직이기
+4. 체크일때 왕 움직이기 # 해결
 5. 체크메이트
 """
 
@@ -125,12 +125,6 @@ class Board(QWidget):
             for x in range(8):
                 if self.chessBoard[y][x] == None:
                     continue
-                tile = Tile(self.chessBoard[y][x], self)
-                self.tiles.append(tile)
-                tile.setGeometry(x*100, y*100, 100, 100)
-                tile.clicked.connect(self.pickPiece)
-                tile.show()
-
                 # 킹이 체크인 경우 하이라이팅
                 if self.chessBoard[y][x].getType() == "King":
                     if self.chessBoard[y][x].team == self.turn and (self.whiteCheck if self.turn == Team.WHITE else self.blackCheck):
@@ -138,6 +132,13 @@ class Board(QWidget):
                         self.checkEdge.setPixmap(QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/rededge.png'))
                         self.checkEdge.move(x*100, y*100)
                         self.checkEdge.show()
+
+                tile = Tile(self.chessBoard[y][x], self)
+                self.tiles.append(tile)
+                tile.setGeometry(x*100, y*100, 100, 100)
+                tile.clicked.connect(self.pickPiece)
+                tile.show()
+
         
         self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
 
