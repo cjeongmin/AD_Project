@@ -24,10 +24,8 @@ def textTest(chessBoard):
     turn = False
     while True:
         clear()
-        blackCheckBoard, whiteCheckBoard = [[True for _ in range(8)] for _ in range(8)], [[True for _ in range(8)] for _ in range(8)]
-        whiteCheck = fillCheckBoard(whiteCheckBoard, chessBoard, Team.WHITE) #화이트 킹이 체크인지 아닌지, 왕이 움직일 수 있는 공간 검사
-        blackCheck = fillCheckBoard(blackCheckBoard, chessBoard, Team.BLACK) #블랙 킹이 체크인지 아닌지, 옹이 움직일 수 있는 공간 검사
-
+        whiteCheckBoard, whiteCheck = fillCheckBoard(chessBoard, Team.WHITE) #화이트 킹이 체크인지 아닌지, 왕이 움직일 수 있는 공간 검사
+        blackCheckBoard, blackCheck = fillCheckBoard(chessBoard, Team.BLACK) #블랙 킹이 체크인지 아닌지, 옹이 움직일 수 있는 공간 검사
         for line in whiteCheckBoard:
             for e in line:
                 print(1 if not(e) else 0, end=" ")

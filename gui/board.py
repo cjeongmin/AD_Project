@@ -8,6 +8,7 @@ from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
 from .tile import Tile
 from chess.team import Team
 from chess.position import Position
+from chess.check import fillCheckBoard
 
 class Board(QWidget):
     def __init__(self, chessBoard):
@@ -17,9 +18,13 @@ class Board(QWidget):
         self.turn = Team.WHITE
         self.pickedPiece = None
         self.edge = None
+        self.checkEdge = None
+        self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
+        self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
         self.repaintBoard()
         self.initUI()
         self.setCenter()
+        
 
     def initUI(self):
         self.setFixedSize(800, 800)
@@ -51,10 +56,16 @@ class Board(QWidget):
                 self.edge.show()
         else:
             if self.pickedPiece != None:
-                if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
-                    return
-                self.repaintBoard()
+                if self.pickedPiece.getType() != "King":
+                    if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
+                        return
+                else:
+                    if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard)):
+                        return
+                self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
+                self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
                 self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
+                self.repaintBoard()
                 self.pickedPiece = None
                 self.edge.deleteLater()
                 self.edge = None
@@ -64,18 +75,27 @@ class Board(QWidget):
     def mousePressEvent(self, e):
         x, y = e.x()//100, e.y()//100
         if self.pickedPiece != None:
-            if not(self.pickedPiece.move(Position(x, y), self.chessBoard)):
-                return
-            self.repaintBoard()
+            if self.pickedPiece.getType() != "King":
+                if not(self.pickedPiece.move(Position(x, y), self.chessBoard)):
+                    return
+            else:
+                if not(self.pickedPiece.move(Position(x, y), self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard)):
+                    return
             self.pickedPiece = None
             self.edge.deleteLater()
             self.edge = None
+            self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
+            self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
             self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
+            self.repaintBoard()
 
     def repaintBoard(self):
         for tile in self.tiles:
             tile.deleteLater()
         self.tiles = []
+        if self.checkEdge != None:
+            self.checkEdge.deleteLater()
+            self.checkEdge = None
         for y in range(8):
             for x in range(8):
                 if self.chessBoard[y][x] == None:
@@ -85,7 +105,13 @@ class Board(QWidget):
                 tile.setGeometry(x*100, y*100, 100, 100)
                 tile.clicked.connect(self.pickPiece)
                 tile.show()
-        self.setWindowTitle(f"Chess: {Team.BLACK if self.turn != Team.BLACK else Team.WHITE}")
+                if self.chessBoard[y][x].getType() == "King":
+                    if self.chessBoard[y][x].team == self.turn and (self.whiteCheck if self.turn == Team.WHITE else self.blackCheck):
+                        self.checkEdge = QLabel(self)
+                        self.checkEdge.setPixmap(QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/rededge.png'))
+                        self.checkEdge.move(x*100, y*100)
+                        self.checkEdge.show()
+        self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
