@@ -7,6 +7,7 @@ from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
 
 from .tile import Tile
 from .promotionnotice import PromotionNotice
+from .endnotice import EndNotice
 from chess.team import Team
 from chess.position import Position
 from chess.check import fillCheckBoard, End
@@ -16,7 +17,7 @@ TODO:
 1. 프로모션 완성 # 해결
 2. 캐슬링 # 해결
 3. 앙파상 # 해결
-4. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리 
+4. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
 5. 체크일때 왕 움직이기 # 해결
 6. 체크메이트
 """
@@ -87,7 +88,8 @@ class Board(QWidget):
                     self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
                     self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
                 except End:
-                    print(f"{self.turn} Win")
+                    notice = EndNotice(self.turn)
+                    notice.exec_()
                     self.deleteLater()
                 self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
                 self.repaintBoard()
@@ -122,7 +124,8 @@ class Board(QWidget):
                 self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
                 self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
             except End:
-                print(f"{self.turn} Win")
+                notice = EndNotice(self.turn)
+                notice.exec_()
                 self.deleteLater()
             self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
             self.repaintBoard()

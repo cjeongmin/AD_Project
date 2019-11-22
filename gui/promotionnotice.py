@@ -1,6 +1,6 @@
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
-from PyQt5.QtWidgets import QApplication, QAbstractButton, QDesktopWidget, QHBoxLayout, QDialog
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QHBoxLayout, QDialog
 
 from chess.pieces.bishop import Bishop
 from chess.pieces.knight import Knight
