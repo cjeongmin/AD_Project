@@ -1,20 +1,21 @@
 import sys, os
-sys.path.insert(0, "/home/cjm/AD_Project/chess")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
 
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QLabel
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
-
+import time
 from .tile import Tile
+from .promotionnotice import PromotionNotice
 from chess.team import Team
 from chess.position import Position
 from chess.check import fillCheckBoard
 
 """
 TODO:
-1. 프로모션 완성
+1. 프로모션 완성 # 해결
 2. 캐슬링
-3. 자신이 핀에 걸린 상태인지 확인
+3. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
 4. 체크일때 왕 움직이기 # 해결
 5. 체크메이트
 """
@@ -28,6 +29,7 @@ class Board(QWidget):
         self.pickedPiece = None
         self.edge = None
         self.checkEdge = None
+        self.notice = None
         self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
         self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
         self.repaintBoard()
@@ -71,8 +73,9 @@ class Board(QWidget):
                         return
                     else:
                         if promotion:
-                            print("PROMOTION")
-                            # TODO: 프로모션 코드를 추가해야 함
+                            self.notice = PromotionNotice(self.pickedPiece.team, self.chessBoard, Position(self.pickedPiece.pos['x'], self.pickedPiece.pos['y']))
+                            self.notice.exec_()
+                            self.repaintBoard()
                 elif self.pickedPiece.getType() != "King":
                     if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
                         return
@@ -98,8 +101,9 @@ class Board(QWidget):
                     return
                 else:
                     if promotion:
-                        print("PROMOTION")
-                        # TODO: 프로모션 코드를 추가해야 함
+                        self.notice = PromotionNotice(self.pickedPiece.team, self.chessBoard, Position(x, y))
+                        self.notice.exec_()
+                        self.repaintBoard()
             elif self.pickedPiece.getType() != "King":
                 if not(self.pickedPiece.move(Position(x, y), self.chessBoard)):
                     return
