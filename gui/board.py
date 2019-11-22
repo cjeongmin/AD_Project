@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QLabel
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
-import time
+
 from .tile import Tile
 from .promotionnotice import PromotionNotice
 from chess.team import Team
@@ -15,10 +15,10 @@ from chess.check import fillCheckBoard
 TODO:
 1. 프로모션 완성 # 해결
 2. 캐슬링 # 해결
-3. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
-4. 체크일때 왕 움직이기 # 해결
-5. 체크메이트
-6. 양파상
+3. 앙파상
+4. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
+5. 체크일때 왕 움직이기 # 해결
+6. 체크메이트
 """
 
 class Board(QWidget):
