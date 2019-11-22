@@ -14,10 +14,11 @@ from chess.check import fillCheckBoard
 """
 TODO:
 1. 프로모션 완성 # 해결
-2. 캐슬링
+2. 캐슬링 # 해결
 3. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
 4. 체크일때 왕 움직이기 # 해결
 5. 체크메이트
+6. 양파상
 """
 
 class Board(QWidget):

@@ -8,6 +8,7 @@ class Break(Exception):
 class Rook(Piece):
     def __init__(self, pos: Position, team: Team):
         super().__init__(pos, team)
+        self.isFirstMove = True
 
     def move(self, movePos: Position, board):
         dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]
@@ -25,5 +26,6 @@ class Rook(Piece):
                 board[self.pos['y']][self.pos['x']] = None
                 self.pos = movePos
                 board[self.pos['y']][self.pos['x']] = self
+                self.isFirstMove = False
                 return True
         return False

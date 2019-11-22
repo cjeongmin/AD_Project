@@ -59,5 +59,7 @@ def fillCheckBoard(chessBoard, team: Team):
                         nx, ny = x+dx[i], y+dy[i]
                         if (0 <= ny < 8 and 0 <= nx < 8):
                             src[ny][nx] = False
-                            
+    chessBoard[kingPos[1]][kingPos[0]].isCheck = False
+    if not(src[kingPos[1]][kingPos[0]]):
+        chessBoard[kingPos[1]][kingPos[0]].isCheck = True
     return (src, True) if not(src[kingPos[1]][kingPos[0]]) else (src, False) # 공격받으면 True 아니면 False
