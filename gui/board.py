@@ -9,14 +9,14 @@ from .tile import Tile
 from .promotionnotice import PromotionNotice
 from chess.team import Team
 from chess.position import Position
-from chess.check import fillCheckBoard
+from chess.check import fillCheckBoard, End
 
 """
 TODO:
 1. 프로모션 완성 # 해결
 2. 캐슬링 # 해결
-3. 앙파상
-4. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
+3. 앙파상 # 해결
+4. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리 
 5. 체크일때 왕 움직이기 # 해결
 6. 체크메이트
 """
@@ -83,8 +83,12 @@ class Board(QWidget):
                 else: # King
                     if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard)):
                         return
-                self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
-                self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
+                try:
+                    self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
+                    self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
+                except End:
+                    print(f"{self.turn} Win")
+                    self.deleteLater()
                 self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
                 self.repaintBoard()
                 self.pickedPiece = None
@@ -114,8 +118,12 @@ class Board(QWidget):
             self.pickedPiece = None
             self.edge.deleteLater()
             self.edge = None
-            self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
-            self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
+            try:
+                self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
+                self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
+            except End:
+                print(f"{self.turn} Win")
+                self.deleteLater()
             self.turn = Team.BLACK if self.turn == Team.WHITE else Team.WHITE
             self.repaintBoard()
 
@@ -144,8 +152,15 @@ class Board(QWidget):
                 tile.clicked.connect(self.pickPiece)
                 tile.show()
 
-        
+        self.reduceValueOfPawnEnpassant()
         self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
+
+    def reduceValueOfPawnEnpassant(self):
+        for y in range(8):
+            for x in range(8):
+                if self.chessBoard[y][x] != None and self.chessBoard[y][x].getType() == "Pawn":
+                    if self.chessBoard[y][x].dieByEnpassant > 0:
+                        self.chessBoard[y][x].dieByEnpassant -= 1
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:

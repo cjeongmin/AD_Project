@@ -1,6 +1,9 @@
 from chess.team import Team
 
-# 수정 필요함
+# FIXME: 왕이 죽었을 때의 처리가 필요함.
+class End(Exception):
+    pass
+
 def fillCheckBoard(chessBoard, team: Team):
     kingPos = []
     src = [[True for _ in range(8)] for _ in range(8)]
@@ -59,6 +62,10 @@ def fillCheckBoard(chessBoard, team: Team):
                         nx, ny = x+dx[i], y+dy[i]
                         if (0 <= ny < 8 and 0 <= nx < 8):
                             src[ny][nx] = False
+
+    if len(kingPos) == 0:
+        raise End()
+
     chessBoard[kingPos[1]][kingPos[0]].isCheck = False
     if not(src[kingPos[1]][kingPos[0]]):
         chessBoard[kingPos[1]][kingPos[0]].isCheck = True
