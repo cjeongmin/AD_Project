@@ -8,7 +8,6 @@ class EndNotice(QDialog):
     def initUI(self, team):
         self.setFixedSize(150, 50)
         self.setGeometry(0, 0, 150, 50)
-        self.setStyleSheet()
         self.setWindowTitle("End")
         hbox = QHBoxLayout()
         label = QLabel(f"{team} Win")
