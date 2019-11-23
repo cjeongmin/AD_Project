@@ -10,6 +10,9 @@ class Bishop(Piece):
         super().__init__(pos, team)
 
     def move(self, movePos: Position, board):
+        if self.isPin(board):
+            return False
+
         dx, dy = [-1, 1, 1, -1], [1, 1, -1, -1]
         try:
             for i in range(4):

@@ -1,6 +1,5 @@
 from chess.team import Team
 
-# FIXME: 왕이 죽었을 때의 처리가 필요함.
 class End(Exception):
     pass
 

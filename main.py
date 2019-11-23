@@ -67,6 +67,7 @@ def guiTest(chessBoard):
     print(sys.path)
     app = QApplication(sys.argv)
     board = Board(chessBoard)
+    _ = board
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

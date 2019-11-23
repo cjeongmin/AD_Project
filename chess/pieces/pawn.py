@@ -9,6 +9,9 @@ class Pawn(Piece):
         self.dieByEnpassant = False 
 
     def move(self, movePos: Position, board) -> (bool, bool): # (success, promotion)
+        if self.isPin(board):
+            return (False, False)
+
         gap = self.pos - movePos
 
         if (self.team == Team.BLACK and self.pos['y'] >= movePos['y']) or (self.team == Team.WHITE and self.pos['y'] <= movePos['y']):

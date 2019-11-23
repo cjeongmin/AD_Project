@@ -17,7 +17,7 @@ TODO:
 1. 프로모션 완성 # 해결
 2. 캐슬링 # 해결
 3. 앙파상 # 해결
-4. 자신이 핀에 걸린 상태인지 확인 // 피스들 현재 위치에서 룩, 퀸, 비숍을 확인 후 있으면 처리
+4. 자신이 핀에 걸린 상태인지 확인 # 해결
 5. 체크일때 왕 움직이기 # 해결
 6. 체크메이트
 """
@@ -141,8 +141,12 @@ class Board(QWidget):
             for x in range(8):
                 if self.chessBoard[y][x] == None:
                     continue
+                # 폰의 dieByEnpassant 값을 내림.
+                if self.chessBoard[y][x].getType() == "Pawn":
+                    if self.chessBoard[y][x].dieByEnpassant > 0:
+                        self.chessBoard[y][x].dieByEnpassant -= 1
                 # 킹이 체크인 경우 하이라이팅
-                if self.chessBoard[y][x].getType() == "King":
+                elif self.chessBoard[y][x].getType() == "King":
                     if self.chessBoard[y][x].team == self.turn and (self.whiteCheck if self.turn == Team.WHITE else self.blackCheck):
                         self.checkEdge = QLabel(self)
                         self.checkEdge.setPixmap(QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/rededge.png'))
@@ -155,15 +159,15 @@ class Board(QWidget):
                 tile.clicked.connect(self.pickPiece)
                 tile.show()
 
-        self.reduceValueOfPawnEnpassant()
+        # self.reduceValueOfPawnEnpassant()
         self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
 
-    def reduceValueOfPawnEnpassant(self):
-        for y in range(8):
-            for x in range(8):
-                if self.chessBoard[y][x] != None and self.chessBoard[y][x].getType() == "Pawn":
-                    if self.chessBoard[y][x].dieByEnpassant > 0:
-                        self.chessBoard[y][x].dieByEnpassant -= 1
+    # def reduceValueOfPawnEnpassant(self):
+    #     for y in range(8):
+    #         for x in range(8):
+    #             if self.chessBoard[y][x] != None and self.chessBoard[y][x].getType() == "Pawn":
+    #                 if self.chessBoard[y][x].dieByEnpassant > 0:
+    #                     self.chessBoard[y][x].dieByEnpassant -= 1
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:

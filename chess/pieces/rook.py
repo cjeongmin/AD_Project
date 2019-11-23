@@ -11,6 +11,9 @@ class Rook(Piece):
         self.isFirstMove = True
 
     def move(self, movePos: Position, board):
+        if self.isPin(board):
+            return False
+
         dx, dy = [-1, 0, 1, 0], [0, -1, 0, 1]
         try:
             for i in range(4):
