@@ -90,4 +90,4 @@ if __name__ == "__main__":
         ],
     ]
     guiTest(chessBoard)
-    # textTest(chessBoard)
+    textTest(chessBoard)

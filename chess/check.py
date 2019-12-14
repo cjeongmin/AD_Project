@@ -33,6 +33,8 @@ def fillCheckBoard(chessBoard, team: Team):
                             src[y1][x1] = False
                             y1 += dy[i]
                             x1 += dx[i]
+                        if (0 <= x1 < 8 and 0 <= y1 < 8):
+                            src[y1][x1] = False
                 elif piece.getType() == "Knight":
                     dx, dy = [-2, -1, 1, 2, 2, 1, -1, -2], [1, 2, 2, 1, -1, -2, -2, -1]
                     for i in range(8):
@@ -47,6 +49,8 @@ def fillCheckBoard(chessBoard, team: Team):
                             src[y1][x1] = False
                             y1 += dy[i]
                             x1 += dx[i]
+                        if (0 <= x1 < 8 and 0 <= y1 < 8):
+                            src[y1][x1] = False
                 elif piece.getType() == "Queen":
                     dx, dy = [-1, -1, 0, 1, 1, 1, 0, -1], [0, -1, -1, -1, 0, 1, 1, 1]
                     for i in range(8):
@@ -55,6 +59,8 @@ def fillCheckBoard(chessBoard, team: Team):
                             src[y1][x1] = False
                             y1 += dy[i]
                             x1 += dx[i]
+                        if (0 <= x1 < 8 and 0 <= y1 < 8):
+                            src[y1][x1] = False
                 elif piece.getType() == "King":
                     dx, dy = [-1, -1, 0, 1, 1, 1, 0, -1], [0, -1, -1, -1, 0, 1, 1, 1]
                     for i in range(8):
@@ -69,3 +75,7 @@ def fillCheckBoard(chessBoard, team: Team):
     if not(src[kingPos[1]][kingPos[0]]):
         chessBoard[kingPos[1]][kingPos[0]].isCheck = True
     return (src, True) if not(src[kingPos[1]][kingPos[0]]) else (src, False) # 공격받으면 True 아니면 False
+
+# TODO: 체크메이트 기능의 구현이 필요함.
+def checkmate(checkBoard, team: Team):
+    pass

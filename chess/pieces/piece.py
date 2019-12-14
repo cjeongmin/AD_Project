@@ -12,7 +12,6 @@ from ..team import Team
 class Break(Exception):
     pass
 
-# TODO: 자신이 움직일 때 체크인지 확인 하는 메서드를 생성해야 함.
 class Piece(metaclass=ABCMeta):
     __KINDS = ("Pawn", "Bishop", "Knight", "Rook", "Queen", "King") # private
 
@@ -24,58 +23,72 @@ class Piece(metaclass=ABCMeta):
     def move(self, movePos: Position, board) -> bool:
         raise NotImplementedError("The method not implemented.")
 
-    # 자신이 움직였을 때 킹이 공격받는지 확인함.
-    def isPin(self, board) -> bool: 
+    def isPin(self, movePos: Position, board) -> bool: 
         diagonalDx, diagonalDy = [[-1, 1], [1, -1]], [[-1, 1], [-1, 1]]
         straightDx, straightDy = [[-1, 1], [0, 0]], [[0, 0], [1, -1]]
         # 대각선
         for i in range(2):
             x, y = self.pos['x']+diagonalDx[i][0], self.pos['y']+diagonalDy[i][0]
-            checkBishopOrQueen, checkKing = False, False
+            checkBishopOrQueen, checkKing, canMove = False, False, False
             while (0 <= x < 8 and 0 <= y < 8) and board[y][x] == None:
+                if movePos['x'] == x and movePos['y'] == y:
+                    canMove = True
                 x, y = x+diagonalDx[i][0], y+diagonalDy[i][0]
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
                 elif board[y][x] != self and board[y][x].getType() == "Bishop" or board[y][x].getType() == "Queen":
                     checkBishopOrQueen = True
-            
+                    if movePos['x'] == x and movePos['y'] == y:
+                        canMove = True
+
             x, y = self.pos['x']+diagonalDx[i][1], self.pos['y']+diagonalDy[i][1]
             while (0 <= x < 8 and 0 <= y < 8) and board[y][x] == None:
+                if movePos['x'] == x and movePos['y'] == y:
+                    canMove = True
                 x, y = x+diagonalDx[i][1], y+diagonalDy[i][1]
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
                 elif board[y][x] != self and board[y][x].getType() == "Bishop" or board[y][x].getType() == "Queen":
                     checkBishopOrQueen = True
-            
-            if checkBishopOrQueen and checkKing:
+                    if movePos['x'] == x and movePos['y'] == y:
+                        canMove = True
+
+            if checkBishopOrQueen and checkKing and not canMove:
                 return True
 
         # 직선
         for i in range(2):
             x, y = self.pos['x']+straightDx[i][0], self.pos['y']+straightDy[i][0]
-            checkRookOrQueen, checkKing = False, False
+            checkRookOrQueen, checkKing, canMove = False, False, False
             while (0 <= x < 8 and 0 <= y < 8) and board[y][x] == None:
+                if movePos['x'] == x and movePos['y'] == y:
+                    canMove = True
                 x, y = x+straightDx[i][0], y+straightDy[i][0]
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
                 elif board[y][x] != self and board[y][x].getType() == "Rook" or board[y][x].getType() == "Queen":
                     checkRookOrQueen = True
-            
+                    if movePos['x'] == x and movePos['y'] == y:
+                        canMove = True
+
             x, y = self.pos['x']+straightDx[i][1], self.pos['y']+straightDy[i][1]
             while (0 <= x < 8 and 0 <= y < 8) and board[y][x] == None:
+                if movePos['x'] == x and movePos['y'] == y:
+                    canMove = True
                 x, y = x+straightDx[i][1], y+straightDy[i][1]
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
                 elif board[y][x] != self and board[y][x].getType() == "Rook" or board[y][x].getType() == "Queen":
                     checkRookOrQueen = True
-            
-            if checkRookOrQueen and checkKing:
-                return True
+                    if movePos['x'] == x and movePos['y'] == y:
+                        canMove = True
 
+            if checkRookOrQueen and checkKing and not canMove:
+                return True
         return False
 
     def getType(self) -> str:
