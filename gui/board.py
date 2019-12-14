@@ -19,7 +19,8 @@ TODO:
 3. 앙파상 # 해결
 4. 자신이 핀에 걸린 상태인지 확인 # 해결
 5. 체크일때 왕 움직이기 # 해결
-6. 체크메이트
+6. 체크메이트 #해결
+7. 특정 말이 움직일 때, 킹이 체크가 걸리는 쪽은 못 움직이도록 하기
 """
 
 class Board(QWidget):
@@ -123,7 +124,7 @@ class Board(QWidget):
             try:
                 self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
                 self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
-            except End:
+            except:
                 notice = EndNotice(self.turn)
                 notice.exec_()
                 self.deleteLater()

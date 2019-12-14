@@ -1,6 +1,7 @@
 from .piece import Piece
 from ..position import Position
 from ..team import Team
+import copy
 
 class Pawn(Piece):
     def __init__(self, pos: Position, team: Team):

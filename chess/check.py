@@ -131,6 +131,7 @@ def checkmate(chessBoard, checkBoard, team: Team):  #True : 체크메이트, Fal
                 if chessBoard[y][x].getType() == "Pawn":
                     board = copy.deepcopy(chessBoard)
                     x1, x2, y1 = x-1, x+1, y + (-1 if board[y][x].team == Team.WHITE else 1)
+                    y2, y3 = y + (-1 if board[y][x].team == Team.WHITE else 1), y + (-2 if board[y][x].team == Team.WHITE else 2)
                     if 0 <= y1 < 8:
                         if 0 <= x1 < 8:
                             board = copy.deepcopy(chessBoard)
@@ -148,6 +149,22 @@ def checkmate(chessBoard, checkBoard, team: Team):  #True : 체크메이트, Fal
                                 CheckBoard, Check = fillCheckBoard(board, piece.team)
                                 if not(Check):
                                     return False
+                    if 0 <= y2 < 8:
+                        board = copy.deepcopy(chessBoard)
+                        piece = board[y][x]
+                        success, promotion = piece.move(Position(x, y2), board)
+                        if success:
+                            CheckBoard, Check = fillCheckBoard(board, piece.team)
+                            if not(Check):
+                                return False
+                    if 0 <= y3 < 8 and chessBoard[y][x].isFirstMove is True:
+                        board = copy.deepcopy(chessBoard)
+                        piece = board[y][x]
+                        success, promotion = piece.move(Position(x, y3), board)
+                        if success:
+                            CheckBoard, Check = fillCheckBoard(board, piece.team)
+                            if not(Check):
+                                return False
                 elif chessBoard[y][x].getType() == "Bishop":
                     dx, dy = [1, 1, -1 ,-1], [-1, 1, 1, -1]
                     for i in range(4):

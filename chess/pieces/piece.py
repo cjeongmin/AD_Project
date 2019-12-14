@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 from ..position import Position
 from ..team import Team
+from chess.check import fillCheckBoard, checkmate
 
 """
     참고)
