@@ -10,7 +10,7 @@ from .promotionnotice import PromotionNotice
 from .endnotice import EndNotice
 from chess.team import Team
 from chess.position import Position
-from chess.check import fillCheckBoard, End
+from chess.check import fillCheckBoard, checkmate
 
 """
 TODO:
@@ -87,7 +87,7 @@ class Board(QWidget):
                 try:
                     self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
                     self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
-                except End:
+                except:
                     notice = EndNotice(self.turn)
                     notice.exec_()
                     self.deleteLater()
@@ -152,6 +152,13 @@ class Board(QWidget):
                         self.checkEdge.setPixmap(QPixmap(os.path.dirname(os.path.abspath(__file__))+'/images/rededge.png'))
                         self.checkEdge.move(x*100, y*100)
                         self.checkEdge.show()
+
+                        ck = checkmate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
+                        if ck:
+                            print("CheckMate", ck)
+                        else:
+                            print("Check", ck)
+
 
                 tile = Tile(self.chessBoard[y][x], self)
                 self.tiles.append(tile)

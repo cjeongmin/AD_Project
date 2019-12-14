@@ -18,6 +18,7 @@ class Piece(metaclass=ABCMeta):
     def __init__(self, pos: Position, team: Team):
         self.pos = pos
         self.team = team
+        self.kingCheck = False
 
     @abstractmethod
     def move(self, movePos: Position, board) -> bool:
