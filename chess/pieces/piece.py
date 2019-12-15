@@ -25,7 +25,7 @@ class Piece(metaclass=ABCMeta):
     def move(self, movePos: Position, board) -> bool:
         raise NotImplementedError("The method not implemented.")
 
-    def isPin(self, movePos: Position, board) -> bool: 
+    def isPin(self, movePos: Position, board) -> bool:
         diagonalDx, diagonalDy = [[-1, 1], [1, -1]], [[-1, 1], [-1, 1]]
         straightDx, straightDy = [[-1, 1], [0, 0]], [[0, 0], [1, -1]]
         # 대각선
@@ -58,6 +58,7 @@ class Piece(metaclass=ABCMeta):
                         canMove = True
 
             if checkBishopOrQueen and checkKing and not canMove:
+                print(self, "is Pin")
                 return True
 
         # 직선
@@ -90,6 +91,7 @@ class Piece(metaclass=ABCMeta):
                         canMove = True
 
             if checkRookOrQueen and checkKing and not canMove:
+                print(self, "is Pin")
                 return True
         return False
 

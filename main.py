@@ -17,6 +17,8 @@ from chess.check import fillCheckBoard
 from gui.board import Board
 from PyQt5.QtWidgets import QApplication
 
+from ai.ai import AI
+
 def clear():
     system('clear')
 
@@ -65,9 +67,9 @@ def textTest(chessBoard):
 
 def guiTest(chessBoard):
     print(sys.path)
+    mode = int(input('Select Mode\n1.Single, 2.AI\n>> '))
     app = QApplication(sys.argv)
-    board = Board(chessBoard)
-    _ = board
+    board = Board(chessBoard, AI() if mode == 2 else None)
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

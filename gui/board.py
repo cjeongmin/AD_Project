@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
 
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QLabel
@@ -8,9 +8,16 @@ from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
 from .tile import Tile
 from .promotionnotice import PromotionNotice
 from .endnotice import EndNotice
+
 from chess.team import Team
 from chess.position import Position
 from chess.check import fillCheckBoard, checkmate
+from chess.pieces.pawn import Pawn
+from chess.pieces.bishop import Bishop
+from chess.pieces.knight import Knight
+from chess.pieces.rook import Rook
+from chess.pieces.queen import Queen
+from chess.pieces.king import King
 
 """
 TODO:
@@ -24,11 +31,13 @@ TODO:
 """
 
 class Board(QWidget):
-    def __init__(self, chessBoard):
+    def __init__(self, chessBoard, ai=None):
         super().__init__()
         self.chessBoard = chessBoard
+        self.ai = ai
         self.tiles = []
         self.turn = Team.WHITE
+        self.lastMove = []
         self.pickedPiece = None
         self.edge = None
         self.checkEdge = None
@@ -70,6 +79,7 @@ class Board(QWidget):
                 self.edge.show()
         else:
             if self.pickedPiece != None:
+                self.lastMove = [self.pickedPiece.pos, piece.pos]
                 if self.pickedPiece.getType() == "Pawn":
                     success, promotion = self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)
                     if not(success):
@@ -78,7 +88,7 @@ class Board(QWidget):
                         if promotion:
                             self.notice = PromotionNotice(self.pickedPiece.team, self.chessBoard, Position(self.pickedPiece.pos['x'], self.pickedPiece.pos['y']))
                             self.notice.exec_()
-                            self.repaintBoard()
+                            # self.repaintBoard()
                 elif self.pickedPiece.getType() != "King":
                     if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
                         return
@@ -103,6 +113,7 @@ class Board(QWidget):
     def mousePressEvent(self, e):
         x, y = e.x()//100, e.y()//100
         if self.pickedPiece != None:
+            self.lastMove = [self.pickedPiece.pos, Position(x, y)]
             if self.pickedPiece.getType() == "Pawn":
                 success, promotion = self.pickedPiece.move(Position(x, y), self.chessBoard)
                 if not(success):
@@ -138,6 +149,44 @@ class Board(QWidget):
         if self.checkEdge != None:
             self.checkEdge.deleteLater()
             self.checkEdge = None
+        
+        # AI MOVE
+        if self.ai != None and self.turn == Team.BLACK:
+            def print_board(board):
+                print()
+                uni_pieces = {'R':'♜', 'N':'♞', 'B':'♝', 'Q':'♛', 'K':'♚', 'P':'♟',
+                            'r':'♖', 'n':'♘', 'b':'♗', 'q':'♕', 'k':'♔', 'p':'♙', '.':'·'}
+                for i, row in enumerate(board.board.split()):
+                    print(' ', 8-i, ' '.join(uni_pieces.get(p, p) for p in row))
+                print('    a b c d e f g h \n\n')
+            
+            self.setWindowTitle(f"Chess: AI")
+            self.turn = Team.WHITE
+
+            # parse
+            move = ""
+            for p in self.lastMove:
+                move += chr(p['x']+ord('a'))+str(8-p['y'])
+            self.ai.hist.append(self.ai.hist[-1].move((self.ai.parse(move[:2]), self.ai.parse(move[2:]))))
+
+            # search
+            start = time.time()
+            for _, move, _ in self.ai.searcher.search(self.ai.hist[-1], self.ai.hist):
+                if time.time() - start > 0.00001:
+                    break
+
+            # move
+            self.ai.hist.append(self.ai.hist[-1].move(move))
+            move = self.ai.render(119-move[0])+self.ai.render(119-move[1])
+            x1, y1, x2, y2 = ord(move[0])-ord('a'), 8-int(move[1]), ord(move[2])-ord('a'), 8-int(move[3])
+
+            if self.chessBoard[y1][x1].getType() == "King":
+                self.chessBoard[y1][x1].move(Position(x2, y2), self.chessBoard, self.blackCheckBoard)
+            else:
+                self.chessBoard[y1][x1].move(Position(x2, y2), self.chessBoard)
+            # refresh whiteCheckBoard
+            self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
+
         for y in range(8):
             for x in range(8):
                 if self.chessBoard[y][x] == None:
@@ -168,6 +217,12 @@ class Board(QWidget):
                 tile.show()
 
         # self.reduceValueOfPawnEnpassant()
+
+        for line in self.chessBoard:
+            for piece in line:
+                print(piece, end="")
+            print()
+        print("*" * 20)
         self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
 
     # def reduceValueOfPawnEnpassant(self):
