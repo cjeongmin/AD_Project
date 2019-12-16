@@ -64,7 +64,7 @@ class Board(QWidget):
 
     def selectMode(self):
         self.mainPalette = QPalette()
-        self.mainPalette.setBrush(10, QBrush(QImage(os.path.dirname(os.path.abspath(__file__))+'/images/chessboard.png').scaled(QSize(800, 800))))
+        self.mainPalette.setBrush(10, QBrush(QImage(os.path.dirname(os.path.abspath(__file__))+'/images/mainWin.jpg').scaled(QSize(800, 800))))
         self.setPalette(self.mainPalette)
         
         self.singleButton = QToolButton(self)
