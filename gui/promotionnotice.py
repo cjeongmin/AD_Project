@@ -20,11 +20,18 @@ class PromotionNotice(QDialog):
         self.initUI()
 
     def initUI(self):
-        self.setFixedSize(500, 300)
-        self.setGeometry(0, 0, 500, 300)
-        self.setWindowTitle("Options")
+        self.setFixedSize(600, 150)
+        self.setGeometry(0, 0, 600, 150)
+        self.setWindowTitle("Promotion")
         self.setCenter()
+        hbox = QHBoxLayout()
+        for piece in self.pieces:
+            hbox.addWidget(piece)
+            piece.clicked.connect(self.pickPiece)
+        self.setLayout(hbox)
+        self.show()
 
+        
     def setCenter(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
