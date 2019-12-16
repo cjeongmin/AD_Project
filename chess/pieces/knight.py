@@ -7,8 +7,8 @@ class Knight(Piece):
         super().__init__(pos, team)
         
     def move(self, movePos: Position, board):
-        if self.isPin(movePos, board):
-            return False
+        # if self.isPin(movePos, board):
+        #     return False
 
         dx, dy = [-2, -1, 1, 2, 2, 1, -1, -2], [1, 2, 2, 1, -1, -2, -2, -1]
         for i in range(8):

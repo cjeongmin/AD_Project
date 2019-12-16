@@ -1,16 +1,19 @@
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QHBoxLayout, QDialog, QLabel
 
 class EndNotice(QDialog):
-    def __init__(self, team):
+    def __init__(self, team, state):
         super().__init__()
-        self.initUI(team)
+        self.initUI(team, state)
 
-    def initUI(self, team):
+    def initUI(self, team, state):
         self.setFixedSize(150, 50)
         self.setGeometry(0, 0, 150, 50)
         self.setWindowTitle("End")
         hbox = QHBoxLayout()
-        label = QLabel(f"{team} Win")
+        if state == "Checkmate":
+            label = QLabel(f"{team} Win")
+        elif state == "Stalemate":
+            label = QLabel("StaleMate")
         hbox.addWidget(label)
         self.setLayout(hbox)
         self.setCenter()

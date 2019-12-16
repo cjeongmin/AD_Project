@@ -177,7 +177,7 @@ def canMove(chessBoard, checkBoard, team: Team):
                         x1, y1 = x + dx[i], y + dy[i]
                         while (0 <= x1 < 8 and 0 <= y1 < 8) and (board[y1][x1] is None or (board[y1][x1].getType() == "King" and board[y1][x1].team != piece.team)):
                             success = piece.move(Position(x1, y1), board)
-                            Check = fillCheckBoard(board, board[y1][x1].team)[1]
+                            Check = fillCheckBoard(board, piece.team)[1]
                             if not(Check):
                                 return False
                             y1 += dy[i]

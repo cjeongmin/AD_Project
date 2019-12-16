@@ -89,6 +89,25 @@ if __name__ == "__main__":
         [
             Rook(Position(0, 7), Team.WHITE), Knight(Position(1, 7), Team.WHITE), Bishop(Position(2, 7), Team.WHITE), Queen(Position(3, 7), Team.WHITE), King(Position(4, 7), Team.WHITE), Bishop(Position(5, 7), Team.WHITE), Knight(Position(6, 7), Team.WHITE), Rook(Position(7, 7), Team.WHITE)
         ],
+        
     ]
+    # chessBoard = [
+    #     [
+    #         None, Bishop(Position(1, 0), Team.BLACK), None, None, King(Position(4, 0), Team.BLACK), None, None, None
+    #     ],
+    #     [
+    #         None, None, None, None, None, None, None, None, None
+    #     ],
+    #     [None for _ in range(8)],
+    #     [None for _ in range(8)],
+    #     [None for _ in range(8)],
+    #     [None for _ in range(8)],
+    #     [
+    #         None, None, None, None, None, None, None, None, None
+    #     ],
+    #     [
+    #         None, None, None, None,  King(Position(4, 7), Team.WHITE), None, None,  Rook(Position(7, 7), Team.WHITE)
+    #     ],
+    # ]
     guiTest(chessBoard)
-    textTest(chessBoard)
+    #textTest(chessBoard)

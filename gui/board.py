@@ -69,13 +69,14 @@ class Board(QWidget):
         
         self.singleButton = QToolButton(self)
         self.singleButton.setText("Single Mode")
-        self.setStyleSheet("font-size: 28px;")
+        self.setStyleSheet("font-size: 40px;")
+        self.singleButton.setStyleSheet("background-color:#993800;")
         self.singleButton.setGeometry(150, 200, 500, 100)
         self.singleButton.clicked.connect(self.callback)
 
         self.aiButton = QToolButton(self)
         self.aiButton.setText("AI Mode")
-        self.setStyleSheet("font-size: 28px;")
+        self.aiButton.setStyleSheet("background-color:#FFDEA9;")
         self.aiButton.setGeometry(150, 500, 500, 100)
         self.aiButton.clicked.connect(self.callback)
 
@@ -283,40 +284,14 @@ class Board(QWidget):
 
         self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
         if ck:
-            notice = EndNotice(Team.BLACK if self.turn == Team.WHITE else Team.WHITE)
-            notice.exec_()
-            self.singleButton.show()
-            self.aiButton.show()
-            self.chessBoard = copy.deepcopy(self.oriChessBoard)
-            self.setPalette(self.mainPalette)
-            for tile in self.tiles:
-                tile.deleteLater()
-            self.tiles = []
-            self.lastMove = []
-            if self.edge != None:
-                self.edge.deleteLater()
-                self.edge = None
-            self.pickedPiece = None
-            if self.checkEdge != None:
-                self.checkEdge.deleteLater()
-                self.checkEdge = None
-            if self.notice != None:
-                self.notice.deleteLater()
-                self.notice = None
-            self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
-            self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
-            self.repaint()
-
+            self.reset("Checkmate")
 
         #스테일메이트 확인
         stm = staleMate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
         if stm:
-            print("StaleMate", self.turn)
-
-        #스테일메이트 확인
-        stm = staleMate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
-        if stm:
-            print("StaleMate", self.turn)
+            print("Stalemate")
+            self.reset("Stalemate")
+        print(stm)
 
     # def reduceValueOfPawnEnpassant(self):
     #     for y in range(8):
@@ -324,6 +299,31 @@ class Board(QWidget):
     #             if self.chessBoard[y][x] != None and self.chessBoard[y][x].getType() == "Pawn":
     #                 if self.chessBoard[y][x].dieByEnpassant > 0:
     #                     self.chessBoard[y][x].dieByEnpassant -= 1
+
+    def reset(self, state):
+        notice = EndNotice(Team.BLACK if self.turn == Team.WHITE else Team.WHITE, state)
+        notice.exec_()
+        self.singleButton.show()
+        self.aiButton.show()
+        self.chessBoard = copy.deepcopy(self.oriChessBoard)
+        self.setPalette(self.mainPalette)
+        for tile in self.tiles:
+            tile.deleteLater()
+        self.tiles = []
+        self.lastMove = []
+        if self.edge != None:
+            self.edge.deleteLater()
+            self.edge = None
+        self.pickedPiece = None
+        if self.checkEdge != None:
+            self.checkEdge.deleteLater()
+            self.checkEdge = None
+        if self.notice != None:
+            self.notice.deleteLater()
+            self.notice = None
+        self.blackCheckBoard, self.blackCheck = fillCheckBoard(self.chessBoard, Team.BLACK)
+        self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
+        self.repaint()
 
     def aiMove(self):
         self.setWindowTitle("Chess: AI")

@@ -10,8 +10,8 @@ class Pawn(Piece):
         self.dieByEnpassant = False 
 
     def move(self, movePos: Position, board) -> (bool, bool): # (success, promotion)
-        if self.isPin(movePos, board):
-            return (False, False)
+        # if self.isPin(movePos, board):
+        #     return (False, False)
 
         gap = self.pos - movePos
 
