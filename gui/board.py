@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QLabel
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
+import copy
 
 from .tile import Tile
 from .promotionnotice import PromotionNotice
@@ -11,7 +12,7 @@ from .endnotice import EndNotice
 
 from chess.team import Team
 from chess.position import Position
-from chess.check import fillCheckBoard, checkmate
+from chess.check import fillCheckBoard, checkmate, staleMate
 from chess.pieces.pawn import Pawn
 from chess.pieces.bishop import Bishop
 from chess.pieces.knight import Knight
@@ -27,7 +28,8 @@ TODO:
 4. 자신이 핀에 걸린 상태인지 확인 # 해결
 5. 체크일때 왕 움직이기 # 해결
 6. 체크메이트 #해결
-7. 특정 말이 움직일 때, 킹이 체크가 걸리는 쪽은 못 움직이도록 하기
+7. 특정 말이 움직일 때, 킹이 체크가 걸리는 쪽은 못 움직이도록 하기 #해결
+8. 스테일메이트 #해결
 """
 
 class Board(QWidget):
@@ -81,6 +83,18 @@ class Board(QWidget):
             if self.pickedPiece != None:
                 self.lastMove = [self.pickedPiece.pos, piece.pos]
                 if self.pickedPiece.getType() == "Pawn":
+                    #미리 움직여서 왕이 체크인지 확인. 체크이면 리턴
+                    preBoard = copy.deepcopy(self.chessBoard)
+                    prePiece = copy.deepcopy(self.pickedPiece)
+                    preSuccess = prePiece.move(Position(piece.pos['x'], piece.pos['y']), preBoard)[0]
+
+                    if not(preSuccess):
+                        return
+                    check = fillCheckBoard(preBoard, prePiece.team)[1]
+                    if check:
+                        return 
+
+                    #실제 움직임
                     success, promotion = self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)
                     if not(success):
                         return
@@ -90,6 +104,16 @@ class Board(QWidget):
                             self.notice.exec_()
                             # self.repaintBoard()
                 elif self.pickedPiece.getType() != "King":
+                    preBoard = copy.deepcopy(self.chessBoard)
+                    prePiece = copy.deepcopy(self.pickedPiece)
+                    preSuccess = prePiece.move(Position(piece.pos['x'], piece.pos['y']), preBoard)
+
+                    if not(preSuccess):
+                        return
+                    check = fillCheckBoard(preBoard, prePiece.team)[1]
+                    if check:
+                        return 
+                    
                     if not(self.pickedPiece.move(Position(piece.pos['x'], piece.pos['y']), self.chessBoard)):
                         return
                 else: # King
@@ -115,6 +139,17 @@ class Board(QWidget):
         if self.pickedPiece != None:
             self.lastMove = [self.pickedPiece.pos, Position(x, y)]
             if self.pickedPiece.getType() == "Pawn":
+                #미리 움직여서 왕이 체크인지 확인. 체크이면 리턴
+                preBoard = copy.deepcopy(self.chessBoard)
+                prePiece = copy.deepcopy(self.pickedPiece)
+                preSuccess = prePiece.move(Position(x, y), preBoard)[0]
+                if not(preSuccess):
+                    return
+                check = fillCheckBoard(preBoard, prePiece.team)[1]
+                if check:
+                    return 
+
+                #실제 움직임
                 success, promotion = self.pickedPiece.move(Position(x, y), self.chessBoard)
                 if not(success):
                     return
@@ -124,6 +159,17 @@ class Board(QWidget):
                         self.notice.exec_()
                         self.repaintBoard()
             elif self.pickedPiece.getType() != "King":
+                #미리 움직여서 왕이 체크인지 확인. 체크이면 리턴
+                preBoard = copy.deepcopy(self.chessBoard)
+                prePiece = copy.deepcopy(self.pickedPiece)
+                preSuccess = prePiece.move(Position(x, y), preBoard)
+                if not(preSuccess):
+                    return
+                check = fillCheckBoard(preBoard, prePiece.team)[1]
+                if check:
+                    return 
+
+                #실제 움직임
                 if not(self.pickedPiece.move(Position(x, y), self.chessBoard)):
                     return
             else:
@@ -203,6 +249,7 @@ class Board(QWidget):
                         self.checkEdge.move(x*100, y*100)
                         self.checkEdge.show()
 
+                        #체크메이트 확인
                         ck = checkmate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
                         if ck:
                             print("CheckMate", ck)
@@ -224,6 +271,11 @@ class Board(QWidget):
             print()
         print("*" * 20)
         self.setWindowTitle(f"Chess: {Team.BLACK if self.turn == Team.BLACK else Team.WHITE}")
+
+        #스테일메이트 확인
+        stm = staleMate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
+        if stm:
+            print("StaleMate", self.turn)
 
     # def reduceValueOfPawnEnpassant(self):
     #     for y in range(8):
