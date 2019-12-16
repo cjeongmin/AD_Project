@@ -39,7 +39,7 @@ class Piece(metaclass=ABCMeta):
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
-                elif board[y][x] != self and board[y][x].getType() == "Bishop" or board[y][x].getType() == "Queen":
+                elif board[y][x] != self and (board[y][x].getType() == "Bishop" or board[y][x].getType() == "Queen"):
                     checkBishopOrQueen = True
                     if movePos['x'] == x and movePos['y'] == y:
                         canMove = True
@@ -52,7 +52,7 @@ class Piece(metaclass=ABCMeta):
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
-                elif board[y][x] != self and board[y][x].getType() == "Bishop" or board[y][x].getType() == "Queen":
+                elif board[y][x] != self and (board[y][x].getType() == "Bishop" or board[y][x].getType() == "Queen"):
                     checkBishopOrQueen = True
                     if movePos['x'] == x and movePos['y'] == y:
                         canMove = True
@@ -72,7 +72,7 @@ class Piece(metaclass=ABCMeta):
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
-                elif board[y][x] != self and board[y][x].getType() == "Rook" or board[y][x].getType() == "Queen":
+                elif board[y][x] != self and (board[y][x].getType() == "Rook" or board[y][x].getType() == "Queen"):
                     checkRookOrQueen = True
                     if movePos['x'] == x and movePos['y'] == y:
                         canMove = True
@@ -85,7 +85,7 @@ class Piece(metaclass=ABCMeta):
             if (0 <= x < 8 and 0 <= y < 8):
                 if board[y][x] == self and board[y][x].getType() == "King":
                     checkKing = True
-                elif board[y][x] != self and board[y][x].getType() == "Rook" or board[y][x].getType() == "Queen":
+                elif board[y][x] != self and (board[y][x].getType() == "Rook" or board[y][x].getType() == "Queen"):
                     checkRookOrQueen = True
                     if movePos['x'] == x and movePos['y'] == y:
                         canMove = True

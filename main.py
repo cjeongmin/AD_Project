@@ -67,9 +67,8 @@ def textTest(chessBoard):
 
 def guiTest(chessBoard):
     print(sys.path)
-    mode = int(input('Select Mode\n1.Single, 2.AI\n>> '))
     app = QApplication(sys.argv)
-    board = Board(chessBoard, AI() if mode == 2 else None)
+    board = Board(chessBoard)
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
