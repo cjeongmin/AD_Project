@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QLabel, QToolButton
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QImage, QPalette, QBrush, QPixmap, QMouseEvent
+import copy
 
 from .tile import Tile
 from .promotionnotice import PromotionNotice
@@ -30,7 +31,8 @@ TODO:
 4. 자신이 핀에 걸린 상태인지 확인 # 해결
 5. 체크일때 왕 움직이기 # 해결
 6. 체크메이트 #해결
-7. 특정 말이 움직일 때, 킹이 체크가 걸리는 쪽은 못 움직이도록 하기
+7. 특정 말이 움직일 때, 킹이 체크가 걸리는 쪽은 못 움직이도록 하기 #해결
+8. 스테일메이트 #해결
 """
 
 class Board(QWidget):
@@ -266,6 +268,7 @@ class Board(QWidget):
                         self.checkEdge.move(x*100, y*100)
                         self.checkEdge.show()
 
+                        #체크메이트 확인
                         ck = checkmate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
                         if ck:
                             print("CheckMate", ck)
@@ -304,6 +307,11 @@ class Board(QWidget):
             self.whiteCheckBoard, self.whiteCheck = fillCheckBoard(self.chessBoard, Team.WHITE)
             self.repaint()
 
+
+        #스테일메이트 확인
+        stm = staleMate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
+        if stm:
+            print("StaleMate", self.turn)
 
         #스테일메이트 확인
         stm = staleMate(self.chessBoard, self.whiteCheckBoard if self.turn == Team.WHITE else self.blackCheckBoard, self.turn)
