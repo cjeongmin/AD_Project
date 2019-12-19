@@ -5,7 +5,7 @@ from os import system
 
 from chess.check import fillCheckBoard
 
-from unittestChess.chessBoard import *
+from chessBoard import *
 
 from gui.board import Board
 from PyQt5.QtWidgets import QApplication
@@ -59,11 +59,10 @@ def textTest(chessBoard):
     print("Exit")
 
 def guiTest(chessBoard):
-    print(sys.path)
     app = QApplication(sys.argv)
     board = Board(chessBoard)
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    guiTest(chessBoard_promotion)
+    guiTest(chessBoard_init)
     #textTest(chessBoard)

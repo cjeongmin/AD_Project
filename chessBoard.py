@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, copy
 sys.path.insert(0, os.path.dirname(os.path.abspath(__package__))+"/chess")
 
 from chess.pieces.pawn import Pawn
@@ -11,6 +11,9 @@ from chess.pieces.king import King
 from chess.position import Position
 from chess.team import Team
 from chess.check import *
+
+
+
 
 chessBoard_init = [
         [
@@ -84,3 +87,20 @@ chessBoard_check = [
         ],
     ]
 checkBoard_check = fillCheckBoard(chessBoard_check, Team.WHITE)[0]
+
+chessBoard_promotion = [
+        [None for _ in range(8)],
+        [None for _ in range(8)],
+        [None for _ in range(7)] + [Pawn(Position(7, 2), Team.WHITE)],
+        [None for _ in range(8)],
+        [None for _ in range(8)],
+        [None for _ in range(8)],
+        [None for _ in range(8)],
+        [None for _ in range(8)],
+    ]
+
+pawn_board = [[Pawn(Position(4, 4), Team.WHITE) if i == 4 and j == 4 else None for j in range(8)] for i in range(8)]
+rook_board = [[Rook(Position(4, 4), Team.WHITE) if i == 4 and j == 4 else None for j in range(8)] for i in range(8)]
+bishop_board = [[Bishop(Position(4, 4), Team.WHITE) if i == 4 and j == 4 else None for j in range(8)] for i in range(8)]
+knight_board = [[Knight(Position(4, 4), Team.WHITE) if i == 4 and j == 4 else None for j in range(8)] for i in range(8)]
+queen_board = [[Queen(Position(4, 4), Team.WHITE) if i == 4 and j == 4 else None for j in range(8)] for i in range(8)]
